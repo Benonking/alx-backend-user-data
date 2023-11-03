@@ -1,0 +1,15 @@
+DEBUG:root:This is a debug mesge
+DEBUG:root:Add: 10 + 5
+DEBUG:root:Sub: 10 + 5
+DEBUG:root:Multiply: 10 + 5
+DEBUG:root:Divide: 10 + 5
+DEBUG:root:This is a debug mesge
+DEBUG:root:Add: 15 + 3
+DEBUG:root:Sub: 15 + 3
+DEBUG:root:Multiply: 15 + 3
+DEBUG:root:Divide: 15 + 3
+DEBUG:root:This is a debug mesge
+DEBUG:root:Add: 15 + 3 is 18
+DEBUG:root:Sub: 15 + 3 is 12
+DEBUG:root:Multiply: 15 + 3 is 45
+DEBUG:root:Divide: 15 + 3 is 5.0
