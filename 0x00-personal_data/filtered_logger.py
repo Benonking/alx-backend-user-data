@@ -5,6 +5,10 @@ Module filter_loggger
 import re
 from typing import List
 import logging
+from parameterized import parameterized
+
+
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(
@@ -47,10 +51,27 @@ class RedactingFormatter(logging.Formatter):
         message = super(RedactingFormatter, self).format(record)
         # filter the message using filter_datum
         filtered = filter_datum(
-                self.fields,
-                self.REDACTION,
-                message,
-                self.SEPARATOR
-            )
+            self.fields,
+            self.REDACTION,
+            message,
+            self.SEPARATOR
+        )
 
         return filtered
+
+
+def get_logger() -> logging.Logger:
+    ''''''
+    # create a logger named "user_data"
+    user_data_logger = logging.getLogger("user_data")
+    user_data_logger.setLevel(logging.INFO)
+    user_data_logger.propagate = False
+
+    # create StremHandler
+
+    handler = logging.StreamHandler(RedactingFormatter(PII_FIELDS))
+    handler.setLevel(logging.INFO)
+    # add the handler to the logger
+    user_data_logger.addHandler(handler)
+
+    return user_data_logger
