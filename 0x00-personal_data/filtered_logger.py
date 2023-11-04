@@ -8,7 +8,7 @@ import logging
 from parameterized import parameterized
 
 
-PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 
 def filter_datum(
@@ -62,17 +62,15 @@ class RedactingFormatter(logging.Formatter):
 
 def get_logger() -> logging.Logger:
     '''create a logger'''
-    # create a logger named "user_data"
-    user_data_logger = logging.getLogger("user_data")
-    user_data_logger.setLevel(logging.INFO)
-    user_data_logger.propagate = False
 
-    # create StremHandler
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
 
     handler = logging.StreamHandler()
-    handler.setFormatter(RedactingFormatter(PII_FIELDS))
 
-    # add the handler to the logger
-    user_data_logger.addHandler(handler)
+    formatter = RedactingFormatter(PII_FIELDS)
 
-    return user_data_logger
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
