@@ -63,19 +63,15 @@ class RedactingFormatter(logging.Formatter):
 
 def get_logger() -> logging.Logger:
     '''create a logger'''
-    # create a logger named "user_data"
     user_data_logger = logging.getLogger("user_data")
     user_data_logger.setLevel(logging.INFO)
     user_data_logger.propagate = False
 
-    # create StremHandler
 
     handler = logging.StreamHandler()
+
     handler.setFormatter(RedactingFormatter(PII_FIELDS))
-
-    # add the handler to the logger
     user_data_logger.addHandler(handler)
-
     return user_data_logger
 
 
@@ -83,17 +79,11 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     '''
     connect to decure db
     '''
-    try:
-        db_config = {
-            "user": os.getenv("PERSONAL_DATA_DB_USERNAME"),
-            "password": os.getenv("PERSONAL_DATA_DB_PASSWORD"),
-            "host": os.getenv("PERSONAL_DATA_DB_HOST"),
-            "database": os.getenv("PERSONAL_DATA_DB_NAME")
+    db_config = {
+        "user": os.getenv("PERSONAL_DATA_DB_USERNAME"),
+        "password": os.getenv("PERSONAL_DATA_DB_PASSWORD"),
+        "host": os.getenv("PERSONAL_DATA_DB_HOST"),
+        "database": os.getenv("PERSONAL_DATA_DB_NAME")
         }
-        if None in db_config.values():
-            raise ValueError("one of the enviroment varibales not set")
-        conn = mysql.connector.connect(**db_config)
-        return conn
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return None
+    conn = mysql.connector.connect(**db_config)
+    return conn
