@@ -89,6 +89,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     conn = mysql.connector.connect(**db_config)
     return conn
 
+
 def main():
     """
     main entry point
