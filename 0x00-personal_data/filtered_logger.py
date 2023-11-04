@@ -5,7 +5,6 @@ Module filter_loggger
 import re
 from typing import List
 import logging
-from parameterized import parameterized
 import os
 import mysql.connector
 
@@ -80,7 +79,7 @@ def get_logger() -> logging.Logger:
     return user_data_logger
 
 
-def get_db():
+def get_db() -> mysql.connector.connection.MySQLConnection:
     '''
     connect to decure db
     '''
