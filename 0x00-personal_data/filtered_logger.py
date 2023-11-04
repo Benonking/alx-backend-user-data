@@ -29,8 +29,8 @@ def filter_datum(
     '''
     pattern = '|'.join(fields)
     return re.sub(
-            f'({pattern})=[^{separator}]*', f'\\1={redaction}', message
-            )
+        f'({pattern})=[^{separator}]*', f'\\1={redaction}', message
+    )
 
 
 class RedactingFormatter(logging.Formatter):
@@ -80,16 +80,16 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     '''
     connect to decure db
     '''
-    
+
     user = os.getenv("PERSONAL_DATA_DB_USERNAME") or "root"
     password = os.getenv("PERSONAL_DATA_DB_PASSWORD") or ""
     host = os.getenv("PERSONAL_DATA_DB_HOST") or "localhost"
-    database= os.getenv("PERSONAL_DATA_DB_NAME")
+    database = os.getenv("PERSONAL_DATA_DB_NAME")
 
-    conn = mysql.connector.connect(user = user,
-                                   password = password,
-                                   host = host,
-                                   database = database)
+    conn = mysql.connector.connect(user=user,
+                                   password=password,
+                                   host=host,
+                                   database=database)
     return conn
 
 
