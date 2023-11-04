@@ -79,9 +79,9 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     connect to decure db
     '''
     db_config = {
-        "user": os.getenv("PERSONAL_DATA_DB_USERNAME"),
-        "password": os.getenv("PERSONAL_DATA_DB_PASSWORD"),
-        "host": os.getenv("PERSONAL_DATA_DB_HOST"),
+        "user": os.getenv("PERSONAL_DATA_DB_USERNAME", "localhost"),
+        "password": os.getenv("PERSONAL_DATA_DB_PASSWORD", "root"),
+        "host": os.getenv("PERSONAL_DATA_DB_HOST", ""),
         "database": os.getenv("PERSONAL_DATA_DB_NAME")
         }
     conn = mysql.connector.connect(**db_config)
