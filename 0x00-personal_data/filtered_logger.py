@@ -61,7 +61,7 @@ class RedactingFormatter(logging.Formatter):
 
 
 def get_logger() -> logging.Logger:
-    ''''''
+    '''create a logger'''
     # create a logger named "user_data"
     user_data_logger = logging.getLogger("user_data")
     user_data_logger.setLevel(logging.INFO)
