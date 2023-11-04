@@ -6,6 +6,8 @@ import re
 from typing import List
 import logging
 from parameterized import parameterized
+import os
+import mysql.connector
 
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
@@ -76,3 +78,20 @@ def get_logger() -> logging.Logger:
     user_data_logger.addHandler(handler)
 
     return user_data_logger
+
+
+def get_db():
+    try:
+        db_config = {
+            "user": os.getenv("PERSONAL_DATA_DB_USERNAME"),
+            "password": os.getenv("PERSONAL_DATA_DB_PASSWORD"),
+            "host": os.getenv("PERSONAL_DATA_DB_HOST"),
+            "database": os.getenv("PERSONAL_DATA_DB_NAME")
+        }
+        if None in db_config.values():
+            raise ValueError("one of the enviroment varibales not set")
+        conn = mysql.connector.connect(**db_config)
+        return conn
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
