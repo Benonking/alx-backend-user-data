@@ -16,7 +16,7 @@ def filter_datum(
         fields: List[str],
         redaction: str,
         message: str,
-        separator: str) -> None:
+        separator: str) -> str:
     '''
     function to obscate a property
     Args:
@@ -28,7 +28,9 @@ def filter_datum(
     TECNIC USE re.sub
     '''
     pattern = '|'.join(fields)
-    return re.sub(f'({pattern})=[^{separator}]*', f'\\1={redaction}', message)
+    return re.sub(
+            f'({pattern})=[^{separator}]*', f'\\1={redaction}', message
+            )
 
 
 class RedactingFormatter(logging.Formatter):
@@ -86,3 +88,22 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         }
     conn = mysql.connector.connect(**db_config)
     return conn
+
+def main():
+    """
+    main entry point
+    """
+    db = get_db()
+    logger = get_logger()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    fields = cursor.column_names
+    for row in cursor:
+        message = "".join("{}={}; ".format(k, v) for k, v in zip(fields, row))
+        logger.info(message.strip())
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
