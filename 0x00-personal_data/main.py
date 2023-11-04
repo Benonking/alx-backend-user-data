@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
-'''
-Hash password
-'''
-import bcrypt
+"""
+Main file
+"""
 
+hash_password = __import__('encrypt_password').hash_password
+is_valid = __import__('encrypt_password').is_valid
 
-
-
-def hash_password(password: str) -> str:
-    '''
-    hash user password
-    '''
-    salt = bcrypt.gensalt()
-    hashed_paswd = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed_paswd
-
+password = "MyAmazingPassw0rd"
+encrypted_password = hash_password(password)
+print(encrypted_password)
+print(is_valid(encrypted_password, password))
