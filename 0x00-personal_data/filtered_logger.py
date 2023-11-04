@@ -81,6 +81,9 @@ def get_logger() -> logging.Logger:
 
 
 def get_db():
+    '''
+    connect to decure db
+    '''
     try:
         db_config = {
             "user": os.getenv("PERSONAL_DATA_DB_USERNAME"),
