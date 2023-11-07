@@ -5,7 +5,7 @@ class BasicAuth
 import base64
 from api.v1.auth.auth import Auth
 from models.user import User
-from typing import Tuple
+from typing import Tuple, TypeVar
 
 
 class BasicAuth(Auth):
@@ -79,3 +79,28 @@ class BasicAuth(Auth):
         if users[0].is_valid_password(user_pwd):
             return users[0]
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        '''
+        get user object from request
+        '''
+        if request is None:
+            return None
+        # user the authorization method to get the authorization header
+        authorization_header = self.authorization_header(request)
+        if authorization_header is None:
+            return None
+        # extract base4 part from hader
+        base64_header = self.extract_base64_authorization_header(
+                authorization_header)
+        if base64_header is None:
+            return None
+        # extract user credentilas from base64_header
+        email, password = self.extract_user_credentials(base64_header)
+        if email is None or password is None:
+            return None
+        # get user instance from credentials
+        user = self.user_object_from_credentials(email, password)
+        if user is None:
+            return None
+        return user
