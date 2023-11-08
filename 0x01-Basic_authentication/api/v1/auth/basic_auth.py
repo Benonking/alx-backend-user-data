@@ -83,16 +83,14 @@ class BasicAuth(Auth):
         '''
         get user object from request
         '''
-        if request is None:
-            return None
         # user the authorization method to get the authorization header
         authorization_header = self.authorization_header(request)
         # extract base4 part from hader
         base64_header = self.extract_base64_authorization_header(
                 authorization_header)
-
+        token = self.decode_base64_authorization_header(base64_header)
         # extract user credentilas from base64_header
-        email, password = self.extract_user_credentials(base64_header)
+        email, password = self.extract_user_credentials(token)
         # get user instance from credentials
         user = self.user_object_from_credentials(email, password)
         return user
