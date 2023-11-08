@@ -3,6 +3,7 @@
 class BasicAuth
 '''
 import base64
+import re
 from api.v1.auth.auth import Auth
 from models.user import User
 from typing import Tuple, TypeVar
@@ -53,13 +54,17 @@ class BasicAuth(Auth):
         '''
         return email and apssword from a base64 decoded string
         '''
-        if decoded_based64_authorization_header is None or \
-                not isinstance(
-                    decoded_based64_authorization_header,
-                    str) or ":" not in decoded_based64_authorization_header:
-            return (None, None)
-        result = decoded_based64_authorization_header.split(':')
-        return tuple(result)
+        if type(decoded_based64_authorization_header) == str:
+            pattern = r'(?P<user>[^:]+):(?P<password>.+)'
+            field_match = re.fullmatch(
+                pattern,
+                decoded_based64_authorization_header.strip(),
+            )
+            if field_match is not None:
+                user = field_match.group('user')
+                password = field_match.group('password')
+                return user, password
+        return None, None
 
     def user_object_from_credentials(
             self,
