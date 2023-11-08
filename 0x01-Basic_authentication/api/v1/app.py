@@ -7,6 +7,8 @@ from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
+from api.v1.auth.auth import Auth
+from api.v1.auth.basic_auth import BasicAuth
 
 
 app = Flask(__name__)
@@ -14,14 +16,13 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 auth = None
-auth = os.getenv('AUTH_TYPE')
+auth_type = os.getenv('AUTH_TYPE', 'auth')
 
-if auth == 'basic_auth':
-    from api.v1.auth.basic_auth import BasicAuth
+
+if auth_type== 'basic_auth':
+    auth = Auth()
+if auth_type == 'basic_auth':
     auth = BasicAuth()
-else:
-    from api.v1.auth.auth import Auth
-    auth == Auth()
 
 
 @app.before_request
@@ -29,16 +30,19 @@ def before_request():
     '''
     Handle before each request
     '''
-    if auth is None:
-        return
-    paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
-    path = request.path
-    if not auth.require_auth(path, paths):
-        return
-    if auth.authorization_header(request) is None:
-        abort(401)
-    if auth.current_user(request) is None:
-        abort(403)
+    if auth:
+        excluded_paths = [
+            '/api/v1/status/',
+            '/api/v1/unauthorized/',
+            '/api/v1/forbidden/']
+        path = request.path
+        if auth.require_auth(path, excluded_paths):
+            auth_header = auth.authorization_header(request)
+            user = auth.current_user(request)
+            if auth_header is None:
+                abort(401)
+            if user is None:
+                abort(403)
 
 
 @app.errorhandler(401)
