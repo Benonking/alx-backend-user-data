@@ -18,7 +18,7 @@ class Auth:
         if path is None or excluded_paths is None or not excluded_paths:
             return True
 
-        # terate through the excluded_paths and 
+        # terate through the excluded_paths and
         # check if path starts with any of them
         for excluded_path in excluded_paths:
             if path.startswith(excluded_path.rstrip('*')):
