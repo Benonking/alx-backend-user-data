@@ -91,7 +91,7 @@ class BasicAuth(Auth):
         # extract base4 part from hader
         base64_header = self.extract_base64_authorization_header(
                 authorization_header)
-        
+
         # extract user credentilas from base64_header
         email, password = self.extract_user_credentials(base64_header)
         # get user instance from credentials
