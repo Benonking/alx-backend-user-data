@@ -36,7 +36,7 @@ class SessionAuth(Auth):
         '''
         return authentiicated user based on cokie value
         '''
-        cookie_value = Auth.session_cookie(request)
+        cookie_value = self.session_cookie(request)
         user_id = self.user_id_for_session_id(cookie_value)
         return User.get(user_id)
 
