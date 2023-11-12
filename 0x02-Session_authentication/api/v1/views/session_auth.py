@@ -37,6 +37,8 @@ def login():
 
 app_views.route('/auth_session/logout',
                 methods=['DELETE'], strict_slashes=False)
+
+
 def logout():
     """
     function to log out user or end ssession
