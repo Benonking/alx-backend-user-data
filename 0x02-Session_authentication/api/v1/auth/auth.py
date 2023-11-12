@@ -2,6 +2,7 @@
 '''
 manage api authnication
 '''
+import os
 from flask import request
 from typing import List, TypeVar
 
@@ -10,6 +11,14 @@ class Auth:
     '''
     Authentication class
     '''
+    def session_cookie(self, request=None):
+        '''
+        return value of the cookie named SESSION_NAME from request
+        '''
+        if request is None:
+            return None
+        self.session_cookie_name = os.getenv('SESSION_NAME', '_my_session_id')
+        return request.cookies.get(self.session_cookie_name)
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         '''
