@@ -6,7 +6,7 @@ Module to hash password
 import bcrypt
 from db import DB
 from uuid import uuid4
-from typing import TypeVar
+from typing import Optional, Union
 from user import User
 
 
@@ -28,7 +28,7 @@ class Auth:
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
         return hashed_password
 
-    def register_user(self, email: str, password: str) -> User:
+    def register_user(self, email: str, password: str) -> Union[User, None]:
         '''
         register new user to db
         Args:
@@ -62,7 +62,7 @@ class Auth:
         '''
         return str(uuid4())
 
-    def create_session(self, email: str) -> [str, None]:
+    def create_session(self, email: str) -> Union[str, None]:
         '''
         create user session
         '''
@@ -73,15 +73,19 @@ class Auth:
             return session_id
         return None
 
-    def get_user_from_session_id(self, session_id: str):
+    def get_user_from_session_id(self, session_id: str) -> Optional[User]:
         '''
+        get user from session_id
+        Args:
+            session_id: session id of user
+        Returns: user with specified session_id or None
         '''
         user = self._db.find_user_by(session_id=session_id)
         if session_id is None or user is None:
             return None
         return user
 
-    def destroy_sesssion(self, user_id):
+    def destroy_sesssion(self, user_id) -> None:
         '''
          Destroy the session for the user.
 
@@ -95,7 +99,7 @@ class Auth:
         self._db.update_user(user.id, session_id=None)
         return None
 
-    def get_reset_password_token(self, email: str) -> str:
+    def get_reset_password_token(self, email: str) -> Union[str, None]:
         '''
         Reset user password_token
         Args:
