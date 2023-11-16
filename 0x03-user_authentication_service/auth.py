@@ -6,6 +6,8 @@ Module to hash password
 import bcrypt
 from db import DB
 from uuid import uuid4
+from typing import TypeVar
+from user import User
 
 
 class Auth:
@@ -15,7 +17,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def _hash_password(self, password: str):
+    def _hash_password(self, password: str) -> str:
         '''
         Hash user password using bcrypt
         Args:
@@ -26,7 +28,7 @@ class Auth:
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
         return hashed_password
 
-    def register_user(self, email: str, password: str):
+    def register_user(self, email: str, password: str) -> User:
         '''
         register new user to db
         Args:
@@ -44,7 +46,7 @@ class Auth:
         else:
             raise ValueError(f'User ${email} already exists')
 
-    def valid_login(self, email, password):
+    def valid_login(self, email: str, password: str) -> bool:
         '''
         Validate user login
         '''
@@ -54,13 +56,13 @@ class Auth:
                 return True
         return False
 
-    def _generate_uuid(self):
+    def _generate_uuid(self) -> str:
         '''
         genreate unique uudid and return string represantation
         '''
         return str(uuid4())
 
-    def create_session(self, email):
+    def create_session(self, email: str) -> [str, None]:
         '''
         create user session
         '''
@@ -71,8 +73,9 @@ class Auth:
             return session_id
         return None
 
-    def get_user_from_session_id(self, session_id):
-
+    def get_user_from_session_id(self, session_id: str):
+        '''
+        '''
         user = self._db.find_user_by(session_id=session_id)
         if session_id is None or user is None:
             return None
@@ -94,7 +97,11 @@ class Auth:
 
     def get_reset_password_token(self, email: str) -> str:
         '''
-
+        Reset user password_token
+        Args:
+            email - user email
+        Returns: new token
+        Raises: ValueError is user isnt found
         '''
         user = self._db.find_user_by(email=email)
         if user is None:
