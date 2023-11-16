@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import NoResultFound, InvalidRequestError
-
+from typing import Union
 from user import Base, User
 
 
@@ -30,7 +30,7 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email, hashed_password):
+    def add_user(self, email: str, hashed_password: str):
         """Add a new user to the database.
 
         Args:
@@ -47,9 +47,8 @@ class DB:
         self._session.commit()
         return added_user
 
-    def find_user_by(self, **kwargs):
+    def find_user_by(self, **kwargs: dict) -> Union[User, None]:
         """Find a user in the database based on the input arguments.
-
         Args:
             **kwargs: Arbitrary keyword arguments for filtering.
 
@@ -72,7 +71,7 @@ class DB:
                 if not hasattr(User, k):
                     raise InvalidRequestError('Invalid')
 
-    def update_user(self, user_id, **kwargs):
+    def update_user(self, user_id: int, **kwargs: dict) -> None:
         """update a user in the database
             based on user_id and the input arguments.
 
