@@ -67,7 +67,10 @@ class DB:
                 raise NoResultFound('Not Found')
             return user
         except InvalidRequestError:
-            raise InvalidRequestError('Invalid')
+            for k in kwargs.keys():
+                # check if atrribute exists
+                if not hasattr(User, k):
+                    raise InvalidRequestError('Invalid')
 
     def update_user(self, user_id, **kwargs):
         """update a user in the database
