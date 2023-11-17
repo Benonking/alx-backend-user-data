@@ -9,7 +9,6 @@ Base = declarative_base()
 
 
 class User(Base):
-
     '''
     table users
     '''

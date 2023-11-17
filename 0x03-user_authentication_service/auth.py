@@ -10,23 +10,31 @@ from typing import Optional, Union
 from user import User
 
 
+def _hash_password(self, password: str) -> bytes:
+    '''
+    Hash user password using bcrypt
+    Args:
+        password: passsword string
+    Return: return bytes
+    '''
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_password
+
+
+def _generate_uuid(self) -> str:
+    '''
+    genreate unique uudid and return string represantation
+    '''
+    return str(uuid4())
+
+
 class Auth:
     """Auth class to interact with the authentication database.
     """
 
     def __init__(self):
         self._db = DB()
-
-    def _hash_password(self, password: str) -> str:
-        '''
-        Hash user password using bcrypt
-        Args:
-            password: passsword string
-        Return: return bytes
-        '''
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return hashed_password
 
     def register_user(self, email: str, password: str) -> Union[User, None]:
         '''
@@ -39,7 +47,7 @@ class Auth:
         '''
         existing_user = self._db.find_user_by(email=email)
         if existing_user is None:
-            hashed_password = self._hash_password(password)
+            hashed_password = _hash_password(password)
             new_user = self._db.add_user(
                 email=email, hashed_password=hashed_password)
             return new_user
@@ -56,19 +64,13 @@ class Auth:
                 return True
         return False
 
-    def _generate_uuid(self) -> str:
-        '''
-        genreate unique uudid and return string represantation
-        '''
-        return str(uuid4())
-
     def create_session(self, email: str) -> Union[str, None]:
         '''
         create user session
         '''
         user = self._db.find_user_by(email=email)
         if user:
-            session_id = self._generate_uuid()
+            session_id = _generate_uuid()
             self._db.update_user(user.id, session_id=session_id)
             return session_id
         return None
@@ -126,6 +128,6 @@ class Auth:
         user = self._db.find_user_by(reset_token=reset_token)
         if reset_token is None:
             raise ValueError
-        password = self._hash_password(password)
+        password = _hash_password(password)
         self._db.update_user(
             user.id, hashed_password=password, reset_token=None)
