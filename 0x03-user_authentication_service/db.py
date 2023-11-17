@@ -41,11 +41,16 @@ class DB:
         Returns:
             User: The created User object.
         """
-        added_user = User(email=email, hashed_password=hashed_password)
-        # add user to a session
-        self._session.add(added_user)
-        # save to db
-        self._session.commit()
+        try:
+
+            added_user = User(email=email, hashed_password=hashed_password)
+            # add user to a session
+            self._session.add(added_user)
+            # save to db
+            self._session.commit()
+        except Exception:
+            self._session.rollback()
+            new_user = None
         return added_user
 
     def find_user_by(self, **kwargs: dict) -> Union[User, None]:
