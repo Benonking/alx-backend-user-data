@@ -19,8 +19,7 @@ def _hash_password(password: str) -> bytes:
     Return: return bytes
     '''
     salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed_password
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
 
 
 def _generate_uuid() -> str:
@@ -56,7 +55,6 @@ class Auth:
         '''
         Validate user login
         '''
-        
         try:
             user = self._db.find_user_by(email=email)
             if user is not None:
@@ -64,7 +62,6 @@ class Auth:
         except NoResultFound:
             return False
         return False
-    
 
     def create_session(self, email: str) -> Union[str, None]:
         '''
