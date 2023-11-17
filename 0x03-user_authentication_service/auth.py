@@ -8,6 +8,7 @@ from db import DB
 from uuid import uuid4
 from typing import Optional, Union
 from user import User
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def _hash_password(password: str) -> bytes:
@@ -36,7 +37,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email: str, password: str) -> Union[User, None]:
+    def register_user(self, email: str, password: str) -> User:
         '''
         register new user to db
         Args:
@@ -45,15 +46,12 @@ class Auth:
         Return: new user if doesnt already exist
         Raises: ValueError: If a user already exists with the provided email.
         '''
-        existing_user = self._db.find_user_by(email=email)
-        if existing_user is None:
-            hashed_password = _hash_password(password)
-            new_user = self._db.add_user(
-                email=email, hashed_password=hashed_password)
-            return new_user
-        else:
-            raise ValueError(f'User ${email} already exists')
-
+        try:
+            self._db.find_user_by(email=email)
+        except NoResultFound:
+            return self._db.add_user(email, _hash_password(password))
+        raise ValueError("User {} already exists".format(email))
+            
     def valid_login(self, email: str, password: str) -> bool:
         '''
         Validate user login
