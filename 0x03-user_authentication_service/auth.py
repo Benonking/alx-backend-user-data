@@ -10,7 +10,7 @@ from typing import Optional, Union
 from user import User
 
 
-def _hash_password(self, password: str) -> bytes:
+def _hash_password(password: str) -> bytes:
     '''
     Hash user password using bcrypt
     Args:
@@ -22,7 +22,7 @@ def _hash_password(self, password: str) -> bytes:
     return hashed_password
 
 
-def _generate_uuid(self) -> str:
+def _generate_uuid() -> str:
     '''
     genreate unique uudid and return string represantation
     '''
