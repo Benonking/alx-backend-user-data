@@ -56,11 +56,15 @@ class Auth:
         '''
         Validate user login
         '''
-        user = self._db.find_user_by(email=email)
-        if user:
-            if bcrypt.checkpw(password.encode(), user.hashed_password):
-                return True
+        
+        try:
+            user = self._db.find_user_by(email=email)
+            if user is not None:
+                return bcrypt.checkpw(password.encode(), user.hashed_password)
+        except NoResultFound:
+            return False
         return False
+    
 
     def create_session(self, email: str) -> Union[str, None]:
         '''
