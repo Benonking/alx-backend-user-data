@@ -42,7 +42,6 @@ class DB:
             User: The created User object.
         """
         try:
-
             added_user = User(email=email, hashed_password=hashed_password)
             # add user to a session
             self._session.add(added_user)
@@ -66,16 +65,28 @@ class DB:
             InvalidRequestError: If an invalid query argument is provided.
         """
         try:
-            # query the db using provide key , value pair
+            # Query the database using the provided arguments
             user = self._session.query(User).filter_by(**kwargs).first()
+
+            # Raise NoResultFound if no user is found
             if user is None:
-                raise NoResultFound('Not Found')
+                raise NoResultFound("No Found")
+
             return user
-        except InvalidRequestError:
-            for k in kwargs.keys():
-                # check if atrribute exists
-                if not hasattr(User, k):
-                    raise InvalidRequestError('Invalid')
+        except InvalidRequestError as e:
+            # Catch and re-raise InvalidRequestError
+            raise InvalidRequestError("Invalid")
+        # try:
+        #     # query the db using provided key , value pair
+        #     user = self._session.query(User).filter_by(**kwargs).first()
+        #     if user is None:
+        #         raise NoResultFound('Not Found')
+        #     return user
+        # except InvalidRequestError:
+        #     for k in kwargs.keys():
+        #         # check if atrribute exists
+        #         if not hasattr(User, k):
+        #             raise InvalidRequestError('Invalid')
 
     def update_user(self, user_id: int, **kwargs: dict) -> None:
         """update a user in the database
