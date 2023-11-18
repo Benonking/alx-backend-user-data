@@ -104,9 +104,13 @@ class Auth:
         Returns:
             None
         '''
+        user = self._db.find_user_by(id=user_id)
+        if user is None:
+            return None
         if user_id is None:
             return None
-        self._db.update_user(user_id, session_id=None)
+        if user.id == user_id:
+            self._db.update_user(user_id, session_id=None)
 
     def get_reset_password_token(self, email: str) -> Union[str, None]:
         '''
