@@ -91,7 +91,7 @@ class Auth:
                 return None
         except NoResultFound:
             return None
-        
+
         return user
 
     def destroy_sesssion(self, user_id) -> None:
@@ -106,9 +106,8 @@ class Auth:
         '''
         if user_id is None:
             return None
-        #user = self._db.find_user_by(id=user_id)
+
         self._db.update_user(user_id, session_id=None)
-        
 
     def get_reset_password_token(self, email: str) -> Union[str, None]:
         '''
