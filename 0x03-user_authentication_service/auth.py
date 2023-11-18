@@ -67,23 +67,31 @@ class Auth:
         '''
         create user session
         '''
-        user = self._db.find_user_by(email=email)
-        if user:
-            session_id = _generate_uuid()
-            self._db.update_user(user.id, session_id=session_id)
-            return session_id
-        return None
+        try:
+            user = self._db.find_user_by(email=email)
+        except NoResultFound:
+            return None
 
-    def get_user_from_session_id(self, session_id: str) -> Optional[User]:
+        if user is None:
+            return None
+        session_id = _generate_uuid()
+        self._db.update_user(user.id, session_id=session_id)
+        return session_id
+
+    def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         '''
         get user from session_id
         Args:
             session_id: session id of user
         Returns: user with specified session_id or None
         '''
-        user = self._db.find_user_by(session_id=session_id)
-        if session_id is None or user is None:
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            if session_id is None or user is None:
+                return None
+        except NoResultFound:
             return None
+        
         return user
 
     def destroy_sesssion(self, user_id) -> None:
@@ -96,9 +104,11 @@ class Auth:
         Returns:
             None
         '''
-        user = self._db.find_user_by(id=user_id)
-        self._db.update_user(user.id, session_id=None)
-        return None
+        if user_id is None:
+            return None
+        #user = self._db.find_user_by(id=user_id)
+        self._db.update_user(user_id, session_id=None)
+        
 
     def get_reset_password_token(self, email: str) -> Union[str, None]:
         '''
@@ -108,10 +118,13 @@ class Auth:
         Returns: new token
         Raises: ValueError is user isnt found
         '''
-        user = self._db.find_user_by(email=email)
+        try:
+            user = self._db.find_user_by(email=email)
+        except NoResultFound:
+            user = None
         if user is None:
             raise ValueError
-        new_token = str(uuid4())
+        new_token = _generate_uuid()
         self._db.update_user(user.id, reset_token=new_token)
         return new_token
 
@@ -124,7 +137,10 @@ class Auth:
         Return: None
         Raises: ValueError if reset token not given
         '''
-        user = self._db.find_user_by(reset_token=reset_token)
+        try:
+            user = self._db.find_user_by(reset_token=reset_token)
+        except NoResultFound:
+            user = None
         if reset_token is None:
             raise ValueError
         password = _hash_password(password)
