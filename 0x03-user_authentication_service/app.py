@@ -5,14 +5,16 @@ from auth import Auth
 
 app = Flask(__name__)
 
-AUTH  = Auth()
+AUTH = Auth()
+
 
 @app.route('/', methods=['GET'], strict_slashes=False)
-def index() ->str:
+def index() -> str:
     '''
     Return Home page payload
     '''
     return jsonify({"message": "Bienvenue"})
+
 
 @app.route("/users", methods=['POST'], strict_slashes=False)
 def users():
@@ -25,11 +27,12 @@ def users():
     try:
         new_user = AUTH.register_user(email=email, password=password)
         res = {
-          'email': new_user.email,
-          'message': "user created"}
+            'email': new_user.email,
+            'message': "user created"}
         return jsonify(res)
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
+
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
@@ -39,13 +42,14 @@ def login():
     '''
     email = request.form.get('email')
     password = request.form.get('password')
-    
-    if AUTH.valid_login(email=email,password=password):
+
+    if AUTH.valid_login(email=email, password=password):
         session_id = AUTH.create_session(email=email)
-        res =  jsonify({"email": email, "message": "logged in"})
+        res = jsonify({"email": email, "message": "logged in"})
         res.set_cookie("session_id", session_id)
         return res
     abort(401)
+
 
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout() -> str:
@@ -56,8 +60,9 @@ def logout() -> str:
         redirect('/')
     abort(403)
 
+
 @app.route('/profile', methods=['GET'], strict_slashes=False)
-def profile() ->str:
+def profile() -> str:
     '''
     Return User's password reset payload
     '''
@@ -67,6 +72,7 @@ def profile() ->str:
         return jsonify({"email": user.email}), 200
     else:
         abort(403)
+
 
 @app.route('/reset_password', methods=['POST'], strict_slashes=False)
 def reset_password() -> str:
@@ -83,15 +89,16 @@ def reset_password() -> str:
         abort(403)
     return jsonify({"email": email, "reset_token": reset_token})
 
+
 @app.route('/reset_password', methods=['PUT'], strict_slashes=False)
-def update_password() ->str:
+def update_password() -> str:
     email = request.form.get('email')
     reset_token = request.form.get('reset_password')
     new_password = request.form.get('new_password')
     changed = False
     try:
         AUTH.update_password(reset_token, new_password)
-        changed =True
+        changed = True
     except ValueError:
         return False
     if changed is False:
