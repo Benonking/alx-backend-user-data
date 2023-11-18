@@ -2,7 +2,7 @@
 """DB module
 """
 from sqlalchemy import create_engine, tuple_
-from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 from sqlalchemy.orm.exc import NoResultFound
@@ -50,7 +50,7 @@ class DB:
             self._session.commit()
         except Exception:
             self._session.rollback()
-            new_user = None
+            added_user = None
         return added_user
 
     def find_user_by(self, **kwargs: dict) -> Union[User, None]:
