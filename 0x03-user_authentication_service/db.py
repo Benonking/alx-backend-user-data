@@ -53,7 +53,7 @@ class DB:
             added_user = None
         return added_user
 
-    def find_user_by(self, **kwargs: dict) -> Union[User, None]:
+    def find_user_by(self, **kwargs: dict) -> User:
         """Find a user in the database based on the input arguments.
         Args:
             **kwargs: Arbitrary keyword arguments for filtering.
